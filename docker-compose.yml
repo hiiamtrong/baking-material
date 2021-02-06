@@ -6,7 +6,7 @@ services:
     container_name: 'express_${APP_NAME}'
     ports:
       - '4000:4000'
-    restart: always
+    restart: unless_stopped
     networks:
       - mern-app
     depends_on:
@@ -27,7 +27,7 @@ services:
     ports:
       - '3000:3000'
     container_name: 'react_${APP_NAME}'
-    restart: always
+    restart: unless_stopped
     networks:
       - mern-app
 

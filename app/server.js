@@ -1,5 +1,4 @@
 const express = require('express')
-require('./db/mongoose')
 const config = require('./config/config')
 
 const app = express()
