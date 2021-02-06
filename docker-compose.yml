@@ -1,0 +1,40 @@
+version: '3'
+services:
+  app:
+    image: 'express-app'
+    build: './app/'
+    container_name: 'express_${APP_NAME}'
+    ports:
+      - '4000:4000'
+    restart: always
+    networks:
+      - mern-app
+    depends_on:
+      - mongo
+  mongo:
+    image: mongo
+    ports:
+      - '27017:27017'
+    container_name: 'mongo_${APP_NAME}'
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - mern-app
+
+  react_app:
+    image: 'react-app'
+    build: './client/'
+    ports:
+      - '3000:3000'
+    container_name: 'react_${APP_NAME}'
+    restart: always
+    networks:
+      - mern-app
+
+networks:
+  mern-app:
+    driver: bridge
+
+volumes:
+  mongo-data:
+    driver: local
