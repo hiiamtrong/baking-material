@@ -8,4 +8,6 @@ function init(app) {
   userRoutes(app)
 }
 
-module.exports.init = init
+module.exports = {
+  init,
+}
