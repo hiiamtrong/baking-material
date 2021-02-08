@@ -8,3 +8,5 @@ config.init(app)
 app.listen(port, () => {
   console.log(`server is running at port ${port}`)
 })
+
+module.exports = { app }
