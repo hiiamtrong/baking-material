@@ -2,9 +2,8 @@ const cors = require('cors')
 
 const helmet = require('helmet')
 const bodyParser = require('body-parser')
-require('../db/mongoose')
-const route = require('../route/app.server.route')
-const logger = require('./logger')
+const route = require('../routes/app.server.route')
+const logger = require('../lib/logger')
 
 const init = (app) => {
   app.use(cors())
@@ -15,7 +14,6 @@ const init = (app) => {
   app.use(bodyParser.json())
 
   logger.init(app)
-
   route.init(app)
 }
 
