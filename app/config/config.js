@@ -4,7 +4,7 @@ const helmet = require('helmet')
 const bodyParser = require('body-parser')
 const route = require('../routes/app.server.route')
 const logger = require('../lib/logger')
-
+require('../auth/auth')
 const init = (app) => {
   app.use(cors())
 

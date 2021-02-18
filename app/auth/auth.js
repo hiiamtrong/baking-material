@@ -1,21 +1,34 @@
 const passport = require('passport')
 const localStrategy = require('passport-local').Strategy
-const user = require('../models/user.server.model')
+const User = require('../models/user.server.model')
 
 passport.use(
-  'signup',
+  'login',
   new localStrategy(
     {
-      usernameField: 'email',
+      usernameField: 'username',
       passwordField: 'password',
     },
-    async (email, password, done) => {
+    async (username, password, done) => {
       try {
-        const user = await UserModel.create({ email, password })
+        const user = await User.findOne({ username })
 
-        return done(null, user)
+        if (!user) {
+          return done(null, false, { message: 'User not found', status: 401 })
+        }
+
+        const validate = await user.isValidPassword(password)
+
+        if (!validate) {
+          return done(null, false, { message: 'Wrong Password', status: 401 })
+        }
+
+        return done(null, user, {
+          message: 'Logged in Successfully',
+          status: 200,
+        })
       } catch (error) {
-        done(error)
+        return done(error)
       }
     }
   )
