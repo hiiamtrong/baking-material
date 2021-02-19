@@ -41,6 +41,7 @@ const UserSchema = new mongoose.Schema(
       ref: 'User',
     },
     roles: [String],
+    refreshToken: String,
   },
   { timestamps: true }
 )
