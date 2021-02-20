@@ -8,6 +8,15 @@ const generateToken = ({ body, type }) => {
   })
 }
 
+const verifyToken = async ({ token, type }) => {
+  if (!token) {
+    return null
+  }
+  const payload = await jwt.verify(token, CREDENTIALS[`${type}_SECRET`])
+  return payload
+}
+
 module.exports = {
   generateToken,
+  verifyToken,
 }
