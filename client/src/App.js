@@ -11,7 +11,8 @@ function App() {
     const fetchMessage = async () => {
       const res = await axios.get('http://localhost:4000/')
       setMessage(res.data.message)
-      console.log(res.data)
+      const resUser = await axios.get('http://localhost:4000/users')
+      console.log(resUser)
     }
     fetchMessage()
   }, [])
