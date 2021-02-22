@@ -1,10 +1,13 @@
+const authRoutes = require('./auth.server.route')
 const userRoutes = require('./users.server.route')
+
 function init(app) {
   app.get('/', (req, res) => {
     res.jsonp({
-      message: 'hello world',
+      message: 'server is running',
     })
   })
+  authRoutes(app)
   userRoutes(app)
 }
 

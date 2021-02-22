@@ -4,7 +4,6 @@ const _ = require('lodash')
 
 const create = asyncMiddleware(async (req, res) => {
   const user = new User(req.body)
-  await user.hashPassword()
   await user.save()
   res.jsonp(user)
 })
