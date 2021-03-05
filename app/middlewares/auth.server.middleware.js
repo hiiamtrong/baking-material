@@ -1,5 +1,6 @@
 const passport = require('passport')
-const asyncMiddleware = require('../utils/async-middleware')
+const asyncMiddleware = require('./async-middleware')
+const helper = require('../utils/helper')
 const User = require('../models/user.server.model')
 const {
   generateToken,
@@ -7,8 +8,8 @@ const {
 } = require('../controllers/auth.server.controller')
 const login = asyncMiddleware(async (req, res, next) => {
   passport.authenticate('login', async (err, user, info) => {
-    if (info.error) {
-      return next(new Error(info.error))
+    if (info && info.status !== 200) {
+      return next(new Error(info.message))
     }
 
     if (err) {
@@ -23,18 +24,8 @@ const login = asyncMiddleware(async (req, res, next) => {
       const token = generateToken({ body, type: 'TOKEN' })
       const refreshToken = generateToken({ body, type: 'REFRESH_TOKEN' })
       User.updateOne({ _id: user._id }, { refreshToken })
-      // res
-      //   .cookie('TOKEN', token, {
-      //     maxAge: 365 * 24 * 60 * 60 * 100,
-      //     httpOnly: true,
-      //     // secure: true;
-      //   })
-      //   .cookie('REFRESH_TOKEN', refreshToken, {
-      //     maxAge: 365 * 24 * 60 * 60 * 100,
-      //     httpOnly: true,
-      //     // secure: true;
-      //   })
-      res.jsonp({ token, refreshToken })
+      res.locals = { ...res.locals, token, refreshToken }
+      next()
     })
   })(req, res, next)
 })
@@ -42,6 +33,9 @@ const login = asyncMiddleware(async (req, res, next) => {
 const requireLogin = asyncMiddleware(async (req, res, next) => {
   const accessToken = req.headers['x-access-token']
   const refreshToken = req.headers['refresh-token']
+  if (helper.isFalsy(accessToken, true) && helper.isFalsy(refreshToken, true)) {
+    return next(new Error('Unauthorized'))
+  }
   const payload = await verifyToken({
     token: accessToken,
     type: 'TOKEN',
@@ -54,8 +48,6 @@ const requireLogin = asyncMiddleware(async (req, res, next) => {
     if (!payloadRefresh) {
       return next(new Error('Unauthorized'))
     }
-
-    // const token = generateToken({ body: payload, type: 'TOKEN' })
   }
   next()
 })
