@@ -13,7 +13,7 @@ axiosClient.interceptors.request.use(
     const refreshToken = localStorage.getItem('refresh-token')
     const headers = {
       ...config.headers,
-      'a-access-token': token,
+      'x-access-token': token,
       'refresh-token': refreshToken,
     }
     const _config = { ...config, headers }
