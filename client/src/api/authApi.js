@@ -7,7 +7,7 @@ const authAPI = {
       data
     )
     localStorage.setItem('token', token)
-    localStorage.setItem('refreshToken', refreshToken)
+    localStorage.setItem('refresh-token', refreshToken)
     return { ...response }
   },
 }

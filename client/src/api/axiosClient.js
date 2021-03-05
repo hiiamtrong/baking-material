@@ -9,8 +9,8 @@ const axiosClient = axios.create({
 
 axiosClient.interceptors.request.use(
   function (config) {
-    const token = localStorage.getItem('token_')
-    const refreshToken = localStorage.getItem('refreshToken_')
+    const token = localStorage.getItem('token')
+    const refreshToken = localStorage.getItem('refresh-token')
     const headers = {
       ...config.headers,
       'a-access-token': token,

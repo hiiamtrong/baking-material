@@ -8,7 +8,7 @@ const {
 } = require('../controllers/auth.server.controller')
 const login = asyncMiddleware(async (req, res, next) => {
   passport.authenticate('login', async (err, user, info) => {
-    if (info && info.status !== 200) {
+    if (info && !/[23]\d+/.test(info.status)) {
       return next(new Error(info.message))
     }
 

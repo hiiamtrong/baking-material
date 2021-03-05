@@ -8,7 +8,7 @@ function isFalsy(value, isAdvanced = false) {
       return true
     }
   }
-  return !!value
+  return !value
 }
 
 module.exports = {
