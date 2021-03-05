@@ -1,5 +1,5 @@
 const User = require('../models/user.server.model')
-const asyncMiddleware = require('../utils/async-middleware')
+const asyncMiddleware = require('../middlewares/async-middleware')
 const _ = require('lodash')
 
 const create = asyncMiddleware(async (req, res) => {
