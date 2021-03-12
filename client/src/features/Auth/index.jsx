@@ -1,14 +1,20 @@
 import authAPI from 'api/authApi'
+import PropTypes from 'prop-types'
 import React, { useState } from 'react'
 import Loading from '../../components/Loading/index.jsx'
-import PropTypes from 'prop-types'
+import notify from '../../components/Notify/index'
 import LoginForm from './Login/index.jsx'
 function AuthFeature() {
   const [user, setUser] = useState()
   const [isLoading, setLoading] = useState()
   const handleLogin = async ({ password, username }) => {
-    const user = await authAPI.login({ username, password })
-    setUser(user)
+    try {
+      const user = await authAPI.login({ username, password })
+      setUser(user)
+      notify.success('Login successful')
+    } catch (error) {
+      notify.errorFromServer(error)
+    }
   }
 
   return (
