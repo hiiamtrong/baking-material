@@ -10,4 +10,5 @@ module.exports = (app) => {
       res.json({ token, refreshToken, user })
     })
   )
+  app.get('/auth/refresh-token', authMiddleware.refreshToken)
 }

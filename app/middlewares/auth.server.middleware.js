@@ -32,27 +32,38 @@ const login = asyncMiddleware(async (req, res, next) => {
 
 const requireLogin = asyncMiddleware(async (req, res, next) => {
   const accessToken = req.headers['x-access-token']
-  const refreshToken = req.headers['refresh-token']
-  if (helper.isFalsy(accessToken, true) && helper.isFalsy(refreshToken, true)) {
+  if (helper.isFalsy(accessToken, true)) {
     return next(new Error('Unauthorized'))
   }
   const payload = await verifyToken({
     token: accessToken,
     type: 'TOKEN',
   })
-  if (!payload) {
-    const payloadRefresh = await verifyToken({
-      token: refreshToken,
-      type: 'REFRESH_TOKEN',
-    })
-    if (!payloadRefresh) {
-      return next(new Error('Unauthorized'))
-    }
+  if (helper.isFalsy(payload, true)) {
+    return next(new Error('Unauthorized'))
   }
   next()
+})
+
+const refreshToken = asyncMiddleware(async (req, res) => {
+  const refreshToken = req.headers['refresh-token']
+  if (helper.isFalsy(refreshToken, true)) {
+    throw new Error('Unauthorized')
+  }
+  const payload = await verifyToken({
+    token: refreshToken,
+    type: 'REFRESH_TOKEN',
+  })
+  if (helper.isFalsy(payload, true)) {
+    throw new Error('Unauthorized')
+  }
+  const token = generateToken({ body: payload, type: 'TOKEN' })
+  const user = await User.findById(payload.user._id)
+  res.jsonp({ token, user })
 })
 
 module.exports = {
   login,
   requireLogin,
+  refreshToken,
 }
