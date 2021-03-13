@@ -7,12 +7,13 @@ function UserFeature() {
   const [users, setUsers] = useState([])
   useEffect(() => {
     const fetchUsers = async (params) => {
-      const users = await usersAPI.getAll(params).catch((error) => {
+      try {
+        const users = await usersAPI.getAll(params)
+        setUsers(users)
+        notify.success('Fetching users successful')
+      } catch (error) {
         notify.errorFromServer(error)
-      })
-      setUsers(users)
-      notify.success('Fetching users successful')
-   
+      }
     }
     fetchUsers()
   }, [])
