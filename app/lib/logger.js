@@ -19,6 +19,7 @@ async function error(error) {
     './error.log',
     `${dayjs().format('YYYY/MM/DD HH:mm:ss')} - ${error.message}\n`
   )
+  throw new Error(error.message)
 }
 
 module.exports = {
