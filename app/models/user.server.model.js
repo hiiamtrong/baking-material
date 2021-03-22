@@ -7,6 +7,10 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: 'Bạn chưa nhập username',
     },
+    displayName: {
+      type: String,
+      required: 'Bạn chưa nhập display name',
+    },
     email: {
       type: String,
       required: 'Bạn chưa nhập email',
@@ -17,7 +21,6 @@ const UserSchema = new mongoose.Schema(
       default: '12345678',
     },
     salt: String,
-    displayName: String,
     status: {
       type: String,
       enum: ['active', 'inactive'],
