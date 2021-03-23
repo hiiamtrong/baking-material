@@ -38,7 +38,10 @@ const requireLogin = asyncMiddleware(async (req, res, next) => {
   const payload = await verifyToken({
     token: accessToken,
     type: 'TOKEN',
+  }).catch((err) => {
+    res.status(401).jsonp(err.message)
   })
+
   if (helper.isFalsy(payload, true)) {
     return next(new Error('Unauthorized'))
   }
@@ -54,6 +57,8 @@ const handleRefreshToken = async (refreshToken) => {
   const payload = await verifyToken({
     token: refreshToken,
     type: 'REFRESH_TOKEN',
+  }).catch((err) => {
+    throw err
   })
   if (helper.isFalsy(payload, true)) {
     throw new Error('Unauthorized')
@@ -64,7 +69,11 @@ const handleRefreshToken = async (refreshToken) => {
 
 const refreshToken = asyncMiddleware(async (req, res) => {
   const refreshToken = req.headers['refresh-token']
-  const { token, payload } = await handleRefreshToken(refreshToken)
+  const { token, payload } = await handleRefreshToken(refreshToken).catch(
+    (err) => {
+      res.status(401).jsonp(err.message)
+    }
+  )
   const user = await User.findById(payload.user._id)
   res.jsonp({ token, user })
 })

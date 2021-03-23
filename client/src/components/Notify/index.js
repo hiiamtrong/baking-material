@@ -1,8 +1,9 @@
+import { get } from 'lodash-es'
 import { toast } from 'react-toastify'
 
 const notify = {
   errorFromServer: function (error) {
-    const message = error.message
+    const message = get(error, 'message', '') || error
     return toast.error(`⛔ ${message}`, {
       position: 'top-right',
       autoClose: 5000,

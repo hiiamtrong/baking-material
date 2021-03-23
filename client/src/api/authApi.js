@@ -1,3 +1,4 @@
+import history from 'utils/history'
 import axiosClient from './axiosClient'
 
 const authAPI = {
@@ -13,10 +14,10 @@ const authAPI = {
   refreshToken: async () => {
     const { token, user } = await axiosClient.get('/auth/refresh-token')
     if (!token) {
-      console.log('hello world')
+      history.push('/auth/login')
     }
     localStorage.setItem('token', token)
-    return user
+    return { user, token }
   },
 }
 

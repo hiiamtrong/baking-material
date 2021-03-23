@@ -1,5 +1,5 @@
 import axios from 'axios'
-
+import authAPI from './authApi'
 const axiosClient = axios.create({
   baseURL: 'http://localhost:4000',
   headers: {
@@ -25,11 +25,29 @@ axiosClient.interceptors.request.use(
 )
 
 axiosClient.interceptors.response.use(
-  function (response) {
+  (response) => {
     return response.data
   },
-  function (error) {
-    return Promise.reject(error.response.data.error)
+  (err) => {
+    return new Promise((resolve) => {
+      const originalReq = err.config
+      if (
+        err.response.status === 401 &&
+        err.config &&
+        !err.config.__isRetryRequest
+      ) {
+        originalReq._retry = true
+
+        let res = authAPI.refreshToken().then((res) => {
+          originalReq.headers['x-access-token'] = res.token
+          return axiosClient(originalReq)
+        })
+
+        resolve(res)
+      }
+
+      return Promise.reject(err.response.data.error)
+    })
   }
 )
 
