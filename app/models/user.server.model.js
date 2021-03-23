@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const uniqueValidator = require('mongoose-unique-validator')
 const bcrypt = require('bcrypt')
 const { error } = require('../lib/logger')
 const UserSchema = new mongoose.Schema(
@@ -6,6 +7,7 @@ const UserSchema = new mongoose.Schema(
     username: {
       type: String,
       required: 'Bạn chưa nhập username',
+      unique: 'Username đã tồn tại',
     },
     displayName: {
       type: String,
@@ -14,7 +16,7 @@ const UserSchema = new mongoose.Schema(
     email: {
       type: String,
       required: 'Bạn chưa nhập email',
-      unique: true,
+      unique: 'Email đã tồn tại',
     },
     password: {
       type: String,
@@ -63,7 +65,9 @@ UserSchema.methods.isValidPassword = async function (password) {
   const compare = await bcrypt.compare(password, user.password)
   return compare
 }
-
-UserSchema.index({ username: 1 }, { sparse: true, unique: true })
+UserSchema.plugin(uniqueValidator, {
+  message: '{PATH} already exists ',
+})
+UserSchema.index({ username: 1, emai: 1 }, { sparse: true, unique: true })
 
 module.exports = mongoose.model('User', UserSchema)

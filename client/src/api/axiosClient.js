@@ -20,19 +20,20 @@ axiosClient.interceptors.request.use(
     return _config
   },
   function (error) {
-    return Promise.reject(error.response.data.error)
+    return Promise.reject(error?.response?.data?.error)
   }
 )
 
 axiosClient.interceptors.response.use(
   (response) => {
-    return response.data
+    return response?.data
   },
+
   function (err) {
     if (
-      err.response.status === 401 &&
-      err.config &&
-      !err.config.__isRetryRequest
+      err?.response?.status === 401 &&
+      err?.config &&
+      !err?.config?.__isRetryRequest
     ) {
       return authAPI
         .refreshToken()
@@ -45,7 +46,7 @@ axiosClient.interceptors.response.use(
           throw error
         })
     }
-    return Promise.reject(err.response.data.error)
+    return Promise.reject(err)
   }
 )
 

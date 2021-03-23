@@ -10,7 +10,7 @@ require('../auth/auth')
 const init = (app) => {
   app.use(cookieParser())
   app.use(cors())
-  app.use(errorHandler())
+  app.use(errorHandler({ log: true }))
   app.use(helmet())
 
   app.use(express.json())
