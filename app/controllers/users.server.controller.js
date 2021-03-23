@@ -3,15 +3,18 @@ const asyncMiddleware = require('../middlewares/async-middleware')
 const _ = require('lodash')
 
 const create = asyncMiddleware(async (req, res) => {
+  const { auth } = req
   const user = new User(req.body)
+  user.createdBy = auth
   await user.save()
   res.jsonp(user)
 })
-
 const list = asyncMiddleware(async (req, res) => {
   const users = await User.find({
     status: 'active',
-  }).lean()
+  })
+    .populate('createdBy', 'username email displayName')
+    .lean()
   res.jsonp(users)
 })
 

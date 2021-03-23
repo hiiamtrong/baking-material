@@ -7,6 +7,6 @@ module.exports = {
     TOKEN_SECRET: 'trong_dep_trai',
     REFRESH_TOKEN_SECRET: 'trong_dep_trai_refresh',
     TOKEN_LIFE: 10 * 60,
-    REFRESH_TOKEN_LIFE: '2 days',
+    REFRESH_TOKEN_LIFE: '10 days',
   },
 }

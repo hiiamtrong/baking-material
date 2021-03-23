@@ -1,6 +1,33 @@
 import { Space, Table, Tag } from 'antd'
+import usersAPI from 'api/usersApi'
+import notify from 'components/Notify'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+
+function UserList() {
+  const [users, setUsers] = useState([])
+  const [waiting, setWaiting] = useState(true)
+  useEffect(() => {
+    const fetchUsers = async (params) => {
+      try {
+        const users = await usersAPI.getAll(params)
+        setUsers(users)
+        notify.success('Fetching users successful')
+      } catch (error) {
+        notify.errorFromServer(error)
+      } finally {
+        setWaiting(false)
+      }
+    }
+    fetchUsers()
+  }, [])
+  return (
+    <div>
+      <UserListView users={users} waiting={waiting} />
+    </div>
+  )
+}
+
 const columns = [
   {
     title: 'Username',
@@ -25,9 +52,9 @@ const columns = [
     render: (roles) => (
       <span>
         {roles.map((tag) => {
-          let color = tag.length > 5 ? 'geekblue' : 'green'
-          if (tag === 'loser') {
-            color = 'volcano'
+          let color = 'red'
+          if (tag === 'admin') {
+            color = 'blue'
           }
           return (
             <Tag color={color} key={tag}>
@@ -50,12 +77,7 @@ const columns = [
   },
 ]
 
-UserList.propTypes = {
-  users: PropTypes.array.isRequired,
-  waiting: PropTypes.bool,
-}
-
-function UserList({ users = [], waiting }) {
+export const UserListView = ({ users = [], waiting }) => {
   return (
     <div>
       <Table
@@ -66,6 +88,10 @@ function UserList({ users = [], waiting }) {
       />
     </div>
   )
+}
+UserListView.propTypes = {
+  users: PropTypes.array.isRequired,
+  waiting: PropTypes.bool,
 }
 
 export default UserList
