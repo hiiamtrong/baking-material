@@ -28,26 +28,24 @@ axiosClient.interceptors.response.use(
   (response) => {
     return response.data
   },
-  (err) => {
-    return new Promise((resolve) => {
-      const originalReq = err.config
-      if (
-        err.response.status === 401 &&
-        err.config &&
-        !err.config.__isRetryRequest
-      ) {
-        originalReq._retry = true
-
-        let res = authAPI.refreshToken().then((res) => {
-          originalReq.headers['x-access-token'] = res.token
-          return axiosClient(originalReq)
+  function (err) {
+    if (
+      err.response.status === 401 &&
+      err.config &&
+      !err.config.__isRetryRequest
+    ) {
+      return authAPI
+        .refreshToken()
+        .then((res) => {
+          err.config.__isRetryRequest = true
+          err.config.headers['x-access-token'] = res.token
+          return axiosClient(err.config)
         })
-
-        resolve(res)
-      }
-
-      return Promise.reject(err.response.data.error)
-    })
+        .catch(function (error) {
+          throw error
+        })
+    }
+    return Promise.reject(err.response.data.error)
   }
 )
 

@@ -23,7 +23,7 @@ const login = asyncMiddleware(async (req, res, next) => {
       const body = { _id: user._id }
       const token = generateToken({ body, type: 'TOKEN' })
       const refreshToken = generateToken({ body, type: 'REFRESH_TOKEN' })
-      User.updateOne({ _id: user._id }, { refreshToken })
+      await User.updateOne({ _id: user._id }, { refreshToken })
       res.locals = { ...res.locals, token, refreshToken }
       next()
     })
@@ -33,17 +33,17 @@ const login = asyncMiddleware(async (req, res, next) => {
 const requireLogin = asyncMiddleware(async (req, res, next) => {
   const accessToken = req.headers['x-access-token']
   if (helper.isFalsy(accessToken, true)) {
-    return next(new Error('Invalid Token'))
+    return res.status(401).jsonp('Invalid token')
   }
   const payload = await verifyToken({
     token: accessToken,
     type: 'TOKEN',
   }).catch((err) => {
-    res.status(401).jsonp(err.message)
+    return res.status(401).jsonp(err.message)
   })
 
   if (helper.isFalsy(payload, true)) {
-    return next(new Error('Unauthorized'))
+    return res.status(401).jsonp('Invalid token')
   }
   const user = await User.findById(payload.user._id)
   req.auth = user
@@ -52,13 +52,13 @@ const requireLogin = asyncMiddleware(async (req, res, next) => {
 
 const handleRefreshToken = async (refreshToken) => {
   if (helper.isFalsy(refreshToken, true)) {
-    throw new Error('Invalid Refresh Token')
+    throw new Error('Unauthorized')
   }
   const payload = await verifyToken({
     token: refreshToken,
     type: 'REFRESH_TOKEN',
-  }).catch((err) => {
-    throw err
+  }).catch(() => {
+    throw new Error('Unauthorized')
   })
   if (helper.isFalsy(payload, true)) {
     throw new Error('Unauthorized')
@@ -67,11 +67,11 @@ const handleRefreshToken = async (refreshToken) => {
   return { token, payload }
 }
 
-const refreshToken = asyncMiddleware(async (req, res) => {
+const refreshToken = asyncMiddleware(async (req, res, next) => {
   const refreshToken = req.headers['refresh-token']
   const { token, payload } = await handleRefreshToken(refreshToken).catch(
     (err) => {
-      res.status(401).jsonp(err.message)
+      return next(err)
     }
   )
   const user = await User.findById(payload.user._id)
