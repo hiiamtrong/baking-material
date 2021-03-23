@@ -14,6 +14,6 @@
   },
   "plugins": ["react"],
   "rules": {
-    "react/display-name": ["false", { "ignoreTranspilerName": "false" }]
+    "react/display-name": [0, { "ignoreTranspilerName": 0 }]
   }
 }

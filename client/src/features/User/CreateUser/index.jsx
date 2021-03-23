@@ -1,231 +1,59 @@
-import {
-  AutoComplete,
-  Button,
-  Cascader,
-  Col,
-  Form,
-  Input,
-  Row,
-  Select,
-} from 'antd'
-import React, { useState } from 'react'
-const { Option } = Select
+import { Button } from '@material-ui/core'
+import InputField from 'components/InputField'
+import React from 'react'
+import { useForm } from 'react-hook-form'
+import * as Yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
+import usersAPI from 'api/usersApi'
+import notify from 'components/Notify'
+const schema = Yup.object().shape({
+  username: Yup.string()
+    .max(10, 'Login must be shorter than 10 characters')
+    .required('Username is required'),
+  email: Yup.string().email('Email invalid').required('Email is required'),
+  displayName: Yup.string().required('Display name is required'),
+})
+const CreateUserForm = () => {
+  const { register, handleSubmit, errors } = useForm({
+    mode: 'onSubmit',
+    resolver: yupResolver(schema),
+  })
 
-const RegistrationForm = () => {
-  const [form] = Form.useForm()
-
-  const onFinish = (values) => {
-    console.log('Received values of form: ', values)
+  const onSubmit = async (data) => {
+    const user = await usersAPI.create(data).catch((error) => {
+      notify.errorFromServer(error)
+    })
+    console.log(user)
   }
 
-  const prefixSelector = (
-    <Form.Item name="prefix" noStyle>
-      <Select
-        style={{
-          width: 70,
-        }}
-      >
-        <Option value="86">+86</Option>
-        <Option value="87">+87</Option>
-      </Select>
-    </Form.Item>
-  )
-  const [autoCompleteResult, setAutoCompleteResult] = useState([])
-
-  const onWebsiteChange = (value) => {
-    if (!value) {
-      setAutoCompleteResult([])
-    } else {
-      setAutoCompleteResult(
-        ['.com', '.org', '.net'].map((domain) => `${value}${domain}`)
-      )
-    }
-  }
-
-  const websiteOptions = autoCompleteResult.map((website) => ({
-    label: website,
-    value: website,
-  }))
   return (
-    <Form
-      {...formItemLayout}
-      form={form}
-      name="register"
-      onFinish={onFinish}
-      initialValues={{
-        residence: ['zhejiang', 'hangzhou', 'xihu'],
-        prefix: '86',
-      }}
-      scrollToFirstError
-    >
-      <Form.Item
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <InputField
+        id="username"
+        name="username"
+        label="Username"
+        inputRef={register}
+        error={errors.username}
+      />
+      <InputField
+        id="email"
         name="email"
-        label="E-mail"
-        rules={[
-          {
-            type: 'email',
-            message: 'The input is not valid E-mail!',
-          },
-          {
-            required: true,
-            message: 'Please input your E-mail!',
-          },
-        ]}
-      >
-        <Input />
-      </Form.Item>
-
-      <Form.Item
-        name="password"
-        label="Password"
-        rules={[
-          {
-            required: true,
-            message: 'Please input your password!',
-          },
-        ]}
-        hasFeedback
-      >
-        <Input.Password />
-      </Form.Item>
-
-      <Form.Item
-        name="confirm"
-        label="Confirm Password"
-        dependencies={['password']}
-        hasFeedback
-        rules={[
-          {
-            required: true,
-            message: 'Please confirm your password!',
-          },
-          ({ getFieldValue }) => ({
-            validator(_, value) {
-              if (!value || getFieldValue('password') === value) {
-                return Promise.resolve()
-              }
-
-              return Promise.reject(
-                new Error('The two passwords that you entered do not match!')
-              )
-            },
-          }),
-        ]}
-      >
-        <Input.Password />
-      </Form.Item>
-
-      <Form.Item
-        name="nickname"
-        label="Nickname"
-        tooltip="What do you want others to call you?"
-        rules={[
-          {
-            required: true,
-            message: 'Please input your nickname!',
-            whitespace: true,
-          },
-        ]}
-      >
-        <Input />
-      </Form.Item>
-
-      <Form.Item
-        name="residence"
-        label="Habitual Residence"
-        rules={[
-          {
-            type: 'array',
-            required: true,
-            message: 'Please select your habitual residence!',
-          },
-        ]}
-      >
-        <Cascader options={residences} />
-      </Form.Item>
-
-      <Form.Item
-        name="phone"
-        label="Phone Number"
-        rules={[
-          {
-            required: true,
-            message: 'Please input your phone number!',
-          },
-        ]}
-      >
-        <Input
-          addonBefore={prefixSelector}
-          style={{
-            width: '100%',
-          }}
-        />
-      </Form.Item>
-
-      <Form.Item
-        name="website"
-        label="Website"
-        rules={[
-          {
-            required: true,
-            message: 'Please input website!',
-          },
-        ]}
-      >
-        <AutoComplete
-          options={websiteOptions}
-          onChange={onWebsiteChange}
-          placeholder="website"
-        >
-          <Input />
-        </AutoComplete>
-      </Form.Item>
-
-      <Form.Item
-        label="Captcha"
-        extra="We must make sure that your are a human."
-      >
-        <Row gutter={8}>
-          <Col span={12}>
-            <Form.Item
-              name="captcha"
-              noStyle
-              rules={[
-                {
-                  required: true,
-                  message: 'Please input the captcha you got!',
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Button>Get captcha</Button>
-          </Col>
-        </Row>
-      </Form.Item>
-
-      <Form.Item
-        name="agreement"
-        valuePropName="checked"
-        rules={[
-          {
-            validator: (_, value) =>
-              value
-                ? Promise.resolve()
-                : Promise.reject(new Error('Should accept agreement')),
-          },
-        ]}
-        {...tailFormItemLayout}
-      ></Form.Item>
-      <Form.Item {...tailFormItemLayout}>
-        <Button type="primary" htmlType="submit">
-          Register
-        </Button>
-      </Form.Item>
-    </Form>
+        label="Enail"
+        inputRef={register}
+        error={errors.email}
+      />
+      <InputField
+        id="displayName"
+        name="displayName"
+        label="Display name"
+        inputRef={register}
+        error={errors.displayName}
+      />
+      <InputField type="file" id="avatar" name="avatar"  />
+      <Button type="submit" color="default">
+        Create
+      </Button>
+    </form>
   )
 }
-
-ReactDOM.render(<RegistrationForm />, mountNode)
+export default CreateUserForm
