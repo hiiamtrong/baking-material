@@ -1,5 +1,6 @@
 import { Space, Table, Tag } from 'antd'
 import usersAPI from 'api/usersApi'
+import Loading from 'components/Loading'
 import notify from 'components/Notify'
 import PropTypes from 'prop-types'
 import React, { useEffect, useState } from 'react'
@@ -12,7 +13,7 @@ function UserList() {
       try {
         const users = await usersAPI.getAll(params)
         setUsers(users)
-        notify.success('Fetching users successful')
+        notify.success('Tải thành công')
       } catch (error) {
         notify.errorFromServer(error)
       } finally {
@@ -21,22 +22,18 @@ function UserList() {
     }
     fetchUsers()
   }, [])
-  return (
-    <div>
-      <UserListView users={users} waiting={waiting} />
-    </div>
-  )
+  return <div>{Loading(UserListView)({ users, isLoading: waiting })} </div>
 }
 
 const columns = [
   {
-    title: 'Username',
+    title: 'Tên đăng nhập',
     dataIndex: 'username',
     key: 'username',
     render: (username) => <a>{username}</a>,
   },
   {
-    title: 'DisplayName',
+    title: 'Họ tên',
     dataIndex: 'displayName',
     key: 'displayName',
   },
@@ -66,11 +63,11 @@ const columns = [
     ),
   },
   {
-    title: 'Action',
+    title: 'Hành động',
     key: 'action',
     render: (text, record) => (
       <Space size="middle">
-        <a>Invite {record.name}</a>
+        <a>Edit {record.name}</a>
         <a>Delete</a>
       </Space>
     ),
@@ -85,6 +82,8 @@ export const UserListView = ({ users = [], waiting }) => {
         pagination={{ position: ['topRight'] }}
         dataSource={users}
         loading={waiting}
+        rowKey="_id"
+        size="middle"
       />
     </div>
   )

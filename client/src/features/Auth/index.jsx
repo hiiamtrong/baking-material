@@ -1,29 +1,31 @@
-import authAPI from 'api/authApi'
+import RootContext from 'context.js'
+import { observer } from 'mobx-react-lite'
 import PropTypes from 'prop-types'
-import React, { useState } from 'react'
+import React, { useContext } from 'react'
+import { Redirect } from 'react-router'
 import Loading from '../../components/Loading/index.jsx'
 import notify from '../../components/Notify/index'
 import LoginForm from './Login/index.jsx'
-function AuthFeature() {
-  const [user, setUser] = useState()
-  const [isLoading, setLoading] = useState()
-  const handleLogin = async ({ password, username }) => {
-    try {
-      const user = await authAPI.login({ username, password })
-      setUser(user)
-      notify.success('Login successful')
-    } catch (error) {
-      notify.errorFromServer(error)
-    }
+
+const AuthFeature = observer(() => {
+  const { authenticationStore } = useContext(RootContext)
+  const { login, isAuthenticated, isLoading } = authenticationStore
+  const handleLogin = async (credentials) => {
+    await login(credentials)
+      .then(() => {
+        notify.success('Đăng nhập thành công')
+      })
+      .catch((err) => {
+        notify.errorFromServer(err)
+      })
   }
 
-  return (
-    <>
-      {!user && <LoginForm handleLogin={handleLogin} setLoading={setLoading} />}
-      {Loading(User)({ user, isLoading })}
-    </>
-  )
-}
+  if (isAuthenticated) {
+    return <Redirect to="/home" />
+  }
+
+  return <div>{Loading(LoginForm)({ isLoading, handleLogin })}</div>
+})
 User.propTypes = {
   user: PropTypes.object,
 }

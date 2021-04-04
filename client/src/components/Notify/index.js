@@ -3,7 +3,12 @@ import { toast } from 'react-toastify'
 
 const notify = {
   errorFromServer: function (error) {
-    const message = get(error, 'message', '') || error
+    let message =
+      get(error, 'response.data.error.message') ||
+      get(error, 'data.error.message') ||
+      get(error, 'error.message') ||
+      get(error, 'message') ||
+      error
     return toast.error(`⛔ ${message}`, {
       position: 'top-right',
       autoClose: 5000,

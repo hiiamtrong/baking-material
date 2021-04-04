@@ -8,7 +8,19 @@ function Loading(LoadingComponent) {
   }
   function WrapComponent({ isLoading, ...props }) {
     if (isLoading) {
-      return <Eclipse size={64} />
+      return (
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Eclipse size={64} color="black" />
+          <p>Đang tải...</p>
+        </div>
+      )
     }
     return <LoadingComponent {...props} />
   }

@@ -1,65 +1,117 @@
-import React, { useState } from 'react'
+import { yupResolver } from '@hookform/resolvers/yup'
+import Avatar from '@material-ui/core/Avatar'
+import Button from '@material-ui/core/Button'
+import Container from '@material-ui/core/Container'
+import CssBaseline from '@material-ui/core/CssBaseline'
+import Grid from '@material-ui/core/Grid'
+import Link from '@material-ui/core/Link'
+import { makeStyles } from '@material-ui/core/styles'
+import Typography from '@material-ui/core/Typography'
+import InputField from 'components/InputField'
 import PropTypes from 'prop-types'
-import authAPI from 'api/authApi'
-// import Loading from '../../../components/Loading/index.jsx'
+import React from 'react'
+import { useForm } from 'react-hook-form'
+import * as Yup from 'yup'
+
 LoginForm.propTypes = {
   handleLogin: PropTypes.func.isRequired,
-  setLoading: PropTypes.func,
 }
 
-function LoginForm({ handleLogin, setLoading }) {
-  const [credentials, setCredentials] = useState({})
-  //   const [isLoading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const handleOnSubmit = (e) => {
-    e.preventDefault()
-    setLoading(true)
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    marginTop: theme.spacing(8),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing(1),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
+}))
+
+const schema = Yup.object().shape({
+  username: Yup.string()
+    .max(20, 'Tài khoản đăng nhập phải ngắn hơn 20 kí tự')
+    .required('Tên tài khoản là bắt buộc'),
+  password: Yup.string().required('Mật khẩu là bắt buộc'),
+})
+
+function LoginForm({ handleLogin }) {
+  const classes = useStyles()
+  const methods = useForm({
+    resolver: yupResolver(schema),
+  })
+  const { register, handleSubmit, errors } = methods
+  const onSubmit = (credentials) => {
     handleLogin(credentials)
-      .catch((err) => {
-        setError(err)
-      })
-      .finally(() => {
-        setLoading(false)
-      })
-  }
-  const handleOnChange = (e) => {
-    setCredentials((prev) => {
-      const current = { ...prev }
-      current[e.target.name] = e.target.value
-      return current
-    })
-  }
-  const handleRefreshToken = async (e) => {
-    e.preventDefault()
-    const user = await authAPI.refreshToken()
-    console.log(user)
   }
 
   return (
-    <>
-      <form>
-        <input name="username" onChange={(e) => handleOnChange(e)} />
-        <br />
-        <input name="password" onChange={(e) => handleOnChange(e)} />
-        <br />
-        <button
-          onClick={(e) => {
-            handleOnSubmit(e)
-          }}
-        >
+    <Container component="main" maxWidth="xs">
+      <CssBaseline />
+      <div className={classes.paper}>
+        <Avatar className={classes.avatar}></Avatar>
+        <Typography component="h1" variant="h5">
           Login
-        </button>
-        <button
-          onClick={(e) => {
-            handleRefreshToken(e)
-          }}
+        </Typography>
+        <form
+          className={classes.form}
+          noValidate
+          onSubmit={handleSubmit(onSubmit)}
         >
-          Refresh Token
-        </button>
-      </form>
-      {/* {Loading(User)({ user, isLoading })} */}
-      {error && <p>{error.message}</p>}
-    </>
+          <InputField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            id="username"
+            label="User Name"
+            name="username"
+            autoComplete="username"
+            autoFocus
+            inputRef={register}
+            error={errors?.username}
+          />
+          <InputField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Password"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+            inputRef={register}
+            error={errors?.password}
+          />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            className={classes.submit}
+          >
+            Sign In
+          </Button>
+          <Grid container>
+            <Grid item xs>
+              <Link href="#" variant="body2">
+                Forgot password?
+              </Link>
+            </Grid>
+          </Grid>
+        </form>
+      </div>
+    </Container>
   )
 }
 
