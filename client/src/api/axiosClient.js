@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { LocalStorages } from 'utils/localStorages'
 import authAPI from './authApi'
 const axiosClient = axios.create({
   baseURL: 'http://localhost:4000',
@@ -9,8 +10,8 @@ const axiosClient = axios.create({
 
 axiosClient.interceptors.request.use(
   function (config) {
-    const token = localStorage.getItem('token')
-    const refreshToken = localStorage.getItem('refresh-token')
+    const token = LocalStorages.getToken()
+    const refreshToken = LocalStorages.getRefreshToken()
     const headers = {
       ...config.headers,
       'x-access-token': token,
@@ -20,7 +21,7 @@ axiosClient.interceptors.request.use(
     return _config
   },
   function (error) {
-    return Promise.reject(error?.response?.data?.error)
+    return Promise.reject(error)
   }
 )
 
@@ -37,9 +38,10 @@ axiosClient.interceptors.response.use(
     ) {
       return authAPI
         .refreshToken()
-        .then((res) => {
+        .then(({ token }) => {
+          LocalStorages.setToken(token)
           err.config.__isRetryRequest = true
-          err.config.headers['x-access-token'] = res.token
+          err.config.headers['x-access-token'] = token
           return axiosClient(err.config)
         })
         .catch(function (error) {

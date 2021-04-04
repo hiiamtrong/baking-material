@@ -14,17 +14,20 @@ passport.use(
         const user = await User.findOne({ username })
 
         if (!user) {
-          return done(null, false, { message: 'User not found', status: 401 })
+          return done(null, false, {
+            message: 'Không tìm thấy tài khoản đăng nhập',
+            status: 401,
+          })
         }
 
         const validate = await user.isValidPassword(password)
 
         if (!validate) {
-          return done(null, false, { message: 'Wrong Password', status: 401 })
+          return done(null, false, { message: 'Sai mật khẩu', status: 401 })
         }
 
         return done(null, user, {
-          message: 'Logged in Successfully',
+          message: 'Đăng nhập thành công',
           status: 200,
         })
       } catch (error) {

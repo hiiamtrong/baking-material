@@ -1,5 +1,6 @@
 import { Space, Table, Tag } from 'antd'
 import usersAPI from 'api/usersApi'
+import Loading from 'components/Loading'
 import notify from 'components/Notify'
 import PropTypes from 'prop-types'
 import React, { useEffect, useState } from 'react'
@@ -21,22 +22,18 @@ function UserList() {
     }
     fetchUsers()
   }, [])
-  return (
-    <div>
-      <UserListView users={users} waiting={waiting} />
-    </div>
-  )
+  return <div>{Loading(UserListView)({ users, isLoading: waiting })} </div>
 }
 
 const columns = [
   {
-    title: 'Username',
+    title: 'Tên đăng nhập',
     dataIndex: 'username',
     key: 'username',
     render: (username) => <a>{username}</a>,
   },
   {
-    title: 'DisplayName',
+    title: 'Họ tên',
     dataIndex: 'displayName',
     key: 'displayName',
   },
@@ -66,7 +63,7 @@ const columns = [
     ),
   },
   {
-    title: 'Action',
+    title: 'Hành động',
     key: 'action',
     render: (text, record) => (
       <Space size="middle">
@@ -85,6 +82,8 @@ export const UserListView = ({ users = [], waiting }) => {
         pagination={{ position: ['topRight'] }}
         dataSource={users}
         loading={waiting}
+        rowKey="_id"
+        size="middle"
       />
     </div>
   )

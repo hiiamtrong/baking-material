@@ -7,16 +7,13 @@ const authAPI = {
       '/auth/login',
       data
     )
-    localStorage.setItem('token', token)
-    localStorage.setItem('refresh-token', refreshToken)
-    return user
+    return { token, refreshToken, user }
   },
   refreshToken: async () => {
     const { token, user } = await axiosClient.get('/auth/refresh-token')
     if (!token) {
       history.push('/auth/login')
     }
-    localStorage.setItem('token', token)
     return { user, token }
   },
 }

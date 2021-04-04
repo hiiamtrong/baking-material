@@ -1,4 +1,4 @@
-import { Container, TextField } from '@material-ui/core'
+import { TextField } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React from 'react'
 
@@ -24,18 +24,17 @@ function InputField({
     label = name
   }
   return (
-    <Container>
-      <TextField
-        name={name}
-        type={type}
-        label={label}
-        inputRef={inputRef}
-        id={id}
-        error={!!error}
-        {...props}
-        helperText={!!error && error.message}
-      />
-    </Container>
+    <TextField
+      name={name}
+      type={type}
+      label={label}
+      inputRef={inputRef}
+      id={id}
+      error={!!error}
+      {...props}
+      helperText={!!error && error.message}
+      fullWidth={true}
+    />
   )
 }
 
