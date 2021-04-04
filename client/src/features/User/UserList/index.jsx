@@ -67,7 +67,7 @@ const columns = [
     key: 'action',
     render: (text, record) => (
       <Space size="middle">
-        <a>Invite {record.name}</a>
+        <a>Edit {record.name}</a>
         <a>Delete</a>
       </Space>
     ),

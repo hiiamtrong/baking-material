@@ -1,31 +1,26 @@
 import { unwrapResult } from '@reduxjs/toolkit'
+import { isEmpty } from 'lodash-es'
 import PropTypes from 'prop-types'
-import React, { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import React from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { Redirect } from 'react-router'
 import Loading from '../../components/Loading/index.jsx'
 import notify from '../../components/Notify/index'
 import { login } from './authSlice'
 import LoginForm from './Login/index.jsx'
 
 function AuthFeature() {
-  useEffect(() => {
-    return setLoading()
-  })
-
   const dispatch = useDispatch()
-  const [isLoading, setLoading] = useState()
+  const { isLoading, user } = useSelector(({ auth }) => auth)
   const handleLogin = async (credentials) => {
-    try {
-      setLoading(true)
-      const action = login(credentials)
-      const resultAction = await dispatch(action)
-      unwrapResult(resultAction)
-      notify.success('Đăng nhập thành công')
-    } catch (error) {
-      notify.errorFromServer(error)
-    } finally {
-      setLoading(false)
-    }
+    const action = login(credentials)
+    const resultAction = await dispatch(action)
+    unwrapResult(resultAction)
+    notify.success('Đăng nhập thành công')
+  }
+
+  if (!isEmpty(user)) {
+    return <Redirect to="/home" />
   }
 
   return <div>{Loading(LoginForm)({ isLoading, handleLogin })}</div>

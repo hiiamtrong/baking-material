@@ -3,31 +3,37 @@ import authAPI from 'api/authApi'
 import { LocalStorages } from 'utils/localStorages'
 
 export const login = createAsyncThunk('/auth/login', async (payload) => {
-  const { token, refreshToken, user } = await authAPI
-    .login(payload)
-    .catch((err) => {
-      console.log(err)
-    })
-  LocalStorages.setToken(token)
-  LocalStorages.setRefreshToken(refreshToken)
-  LocalStorages.setUser(user)
-  return user
+  const credentials = await authAPI.login(payload).catch((err) => {
+    console.log(err)
+  })
+  return credentials
 })
 
 export const authSlice = createSlice({
   name: 'auth',
   initialState: {
-    user: JSON.parse(LocalStorages.get(LocalStorages.USER)) || {},
+    user: LocalStorages.getUser(),
+    token: LocalStorages.getToken(),
+    refreshToken: LocalStorages.getRefreshToken(),
+    isLoading: false,
+    error: null,
   },
   extraReducers: {
     [login.fulfilled]: (state, action) => {
-      state.user = action.payload
+      LocalStorages.setCredentials(action.payload)
+
+      Object.assign(state, action.payload)
+      state.isLoading = false
+    },
+    [login.rejected]: (state, action) => {
+      state.error = action.payload
+      state.isLoading = false
+    },
+    [login.pending]: (state) => {
+      state.isLoading = true
     },
   },
   reducers: {
-    setUser: (state, action) => {
-      state.user = action.payload
-    },
     clearUser: (state) => {
       LocalStorages.remove(LocalStorages.TOKEN)
       LocalStorages.remove(LocalStorages.REFRESH_TOKEN)
@@ -38,6 +44,6 @@ export const authSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { setUser, clearUser } = authSlice.actions
+export const { clearUser } = authSlice.actions
 
 export default authSlice.reducer

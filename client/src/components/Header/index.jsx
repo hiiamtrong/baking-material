@@ -5,16 +5,25 @@ import {
   SettingFilled,
 } from '@ant-design/icons'
 import { Menu } from 'antd'
+import { clearUser } from 'features/Auth/authSlice'
 import { isEmpty } from 'lodash'
 import React from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
+import history from 'utils/history'
 
 const { SubMenu } = Menu
 
 export const Header = () => {
-  const user = {
-    username: 'trongdev',
+  const user = useSelector((state) => state.auth.user)
+  const dispatch = useDispatch()
+
+  const handleLogout = () => {
+    const action = clearUser()
+    dispatch(action)
+    history.push('/auth/login')
   }
+
   return (
     <Menu mode="horizontal">
       <Menu.Item key="home" icon={<HomeOutlined />}>
@@ -23,6 +32,7 @@ export const Header = () => {
 
       {/* Menu account  */}
       <SubMenu
+        hidden={isEmpty(user)}
         key="subMenuAccounts"
         icon={<UserSwitchOutlined />}
         title="Accounts"
@@ -41,6 +51,7 @@ export const Header = () => {
       </SubMenu>
       {/* Menu Product */}
       <SubMenu
+        hidden={isEmpty(user)}
         key="subMenuProducts"
         icon={<ShoppingCartOutlined />}
         title="Products"
@@ -58,13 +69,17 @@ export const Header = () => {
       <Menu.SubMenu
         key="subMenuSetting"
         icon={<SettingFilled />}
-        title={isEmpty(user) ? 'Settings' : user.username}
+        title={isEmpty(user) ? 'Settings' : user.displayName}
       >
         <Menu.Item key="setting:1" hidden={!isEmpty(user)}>
-          <Link to="/">Login</Link>
+          <Link to="/auth/login">Login</Link>
         </Menu.Item>
-        <Menu.Item key="setting:2" hidden={isEmpty(user)}>
-          <Link to="/">Logout</Link>
+        <Menu.Item
+          key="setting:2"
+          onClick={() => handleLogout()}
+          hidden={isEmpty(user)}
+        >
+          Logout
         </Menu.Item>
       </Menu.SubMenu>
     </Menu>

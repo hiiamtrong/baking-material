@@ -1,13 +1,9 @@
-import { useEffect, useState } from 'react'
+import { isEmpty } from 'lodash-es'
 import { useSelector } from 'react-redux'
 
 function useAuthentication() {
   const user = useSelector(({ auth }) => auth.user)
-  const [isAuthenticated, setAuthenticated] = useState(!!user)
-  useEffect(() => {
-    setAuthenticated(!!user)
-  }, [user])
-  return [isAuthenticated, setAuthenticated]
+  return !isEmpty(user)
 }
 
 export default useAuthentication

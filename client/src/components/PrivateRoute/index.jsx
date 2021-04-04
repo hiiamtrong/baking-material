@@ -8,8 +8,7 @@ PrivateRoute.propTypes = {
 }
 
 function PrivateRoute({ component, ...props }) {
-  const [isAuthenticated] = useAuthentication()
-  console.log(isAuthenticated)
+  const isAuthenticated = useAuthentication()
   if (isAuthenticated) {
     return <Route {...props} component={component} />
   }

@@ -45,7 +45,9 @@ const requireLogin = asyncMiddleware(async (req, res, next) => {
   if (helper.isFalsy(payload, true)) {
     return res.status(401).jsonp('Invalid token')
   }
-  const user = await User.findById(payload.user._id)
+  const user = await User.findById(payload.user._id).select(
+    '-password -salt -refreshToken'
+  )
   req.auth = user
   next()
 })
@@ -77,6 +79,7 @@ const refreshToken = asyncMiddleware(async (req, res, next) => {
   const user = await User.findById(payload.user._id).select(
     '-password -salt -refreshToken'
   )
+
   res.jsonp({ token, user })
 })
 

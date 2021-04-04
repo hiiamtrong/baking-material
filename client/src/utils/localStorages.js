@@ -12,7 +12,11 @@ export const LocalStorages = {
   },
 
   getCredentials() {
-    return JSON.parse(localStorage.getItem(this.CREDENTIALS))
+    const credentials = JSON.parse(localStorage.getItem(this.CREDENTIALS))
+    if (isEmpty(credentials)) {
+      return {}
+    }
+    return credentials
   },
 
   setToken(token) {
@@ -30,6 +34,9 @@ export const LocalStorages = {
 
   getUser() {
     const { user } = this.getCredentials()
+    if (!user) {
+      return {}
+    }
     return user
   },
 
