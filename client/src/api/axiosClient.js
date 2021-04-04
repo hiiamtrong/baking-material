@@ -38,10 +38,10 @@ axiosClient.interceptors.response.use(
     ) {
       return authAPI
         .refreshToken()
-        .then(({ token }) => {
-          LocalStorages.setToken(token)
+        .then((credentials) => {
+          LocalStorages.setCredentials(credentials)
           err.config.__isRetryRequest = true
-          err.config.headers['x-access-token'] = token
+          err.config.headers['x-access-token'] = credentials.token
           return axiosClient(err.config)
         })
         .catch(function (error) {

@@ -13,7 +13,7 @@ function UserList() {
       try {
         const users = await usersAPI.getAll(params)
         setUsers(users)
-        notify.success('Fetching users successful')
+        notify.success('Tải thành công')
       } catch (error) {
         notify.errorFromServer(error)
       } finally {

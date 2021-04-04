@@ -12,7 +12,7 @@ function Routes() {
     <div>
       <Header></Header>
       <Route exact path="/auth/login" component={AuthFeature}></Route>
-      <PrivateRoute exact path="/users" component={UserFeature}></PrivateRoute>
+      <PrivateRoute path="/users" component={UserFeature}></PrivateRoute>
       <PrivateRoute
         exact
         path="/home"

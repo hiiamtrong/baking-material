@@ -1,26 +1,23 @@
 import {
-  ShoppingCartOutlined,
-  UserSwitchOutlined,
   HomeOutlined,
   SettingFilled,
+  ShoppingCartOutlined,
+  UserSwitchOutlined,
 } from '@ant-design/icons'
 import { Menu } from 'antd'
-import { clearUser } from 'features/Auth/authSlice'
-import { isEmpty } from 'lodash'
-import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
-import history from 'utils/history'
+import RootContext from 'context'
+import { observer } from 'mobx-react-lite'
+import React, { useContext } from 'react'
+import { Link, useHistory } from 'react-router-dom'
 
 const { SubMenu } = Menu
 
-export const Header = () => {
-  const user = useSelector((state) => state.auth.user)
-  const dispatch = useDispatch()
-
+export const Header = observer(() => {
+  const history = useHistory()
+  const { authenticationStore } = useContext(RootContext)
+  const { logout, isAuthenticated, user } = authenticationStore
   const handleLogout = () => {
-    const action = clearUser()
-    dispatch(action)
+    logout()
     history.push('/auth/login')
   }
 
@@ -32,7 +29,7 @@ export const Header = () => {
 
       {/* Menu account  */}
       <SubMenu
-        hidden={isEmpty(user)}
+        hidden={!isAuthenticated}
         key="subMenuAccounts"
         icon={<UserSwitchOutlined />}
         title="Accounts"
@@ -51,7 +48,7 @@ export const Header = () => {
       </SubMenu>
       {/* Menu Product */}
       <SubMenu
-        hidden={isEmpty(user)}
+        hidden={!isAuthenticated}
         key="subMenuProducts"
         icon={<ShoppingCartOutlined />}
         title="Products"
@@ -69,19 +66,19 @@ export const Header = () => {
       <Menu.SubMenu
         key="subMenuSetting"
         icon={<SettingFilled />}
-        title={isEmpty(user) ? 'Settings' : user.displayName}
+        title={!isAuthenticated ? 'Settings' : user.displayName}
       >
-        <Menu.Item key="setting:1" hidden={!isEmpty(user)}>
+        <Menu.Item key="setting:1" hidden={isAuthenticated}>
           <Link to="/auth/login">Login</Link>
         </Menu.Item>
         <Menu.Item
           key="setting:2"
           onClick={() => handleLogout()}
-          hidden={isEmpty(user)}
+          hidden={!isAuthenticated}
         >
           Logout
         </Menu.Item>
       </Menu.SubMenu>
     </Menu>
   )
-}
+})

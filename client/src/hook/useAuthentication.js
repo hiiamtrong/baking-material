@@ -1,9 +1,9 @@
-import { isEmpty } from 'lodash-es'
-import { useSelector } from 'react-redux'
+import RootContext from 'context'
+import { useContext } from 'react'
 
 function useAuthentication() {
-  const user = useSelector(({ auth }) => auth.user)
-  return !isEmpty(user)
+  const { authenticationStore } = useContext(RootContext)
+  return authenticationStore.isAuthenticated
 }
 
 export default useAuthentication

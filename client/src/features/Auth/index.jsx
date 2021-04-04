@@ -1,30 +1,31 @@
-import { unwrapResult } from '@reduxjs/toolkit'
-import { isEmpty } from 'lodash-es'
+import RootContext from 'context.js'
+import { observer } from 'mobx-react-lite'
 import PropTypes from 'prop-types'
-import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useContext } from 'react'
 import { Redirect } from 'react-router'
 import Loading from '../../components/Loading/index.jsx'
 import notify from '../../components/Notify/index'
-import { login } from './authSlice'
 import LoginForm from './Login/index.jsx'
 
-function AuthFeature() {
-  const dispatch = useDispatch()
-  const { isLoading, user } = useSelector(({ auth }) => auth)
+const AuthFeature = observer(() => {
+  const { authenticationStore } = useContext(RootContext)
+  const { login, isAuthenticated, isLoading } = authenticationStore
   const handleLogin = async (credentials) => {
-    const action = login(credentials)
-    const resultAction = await dispatch(action)
-    unwrapResult(resultAction)
-    notify.success('Đăng nhập thành công')
+    await login(credentials)
+      .then(() => {
+        notify.success('Đăng nhập thành công')
+      })
+      .catch((err) => {
+        notify.errorFromServer(err)
+      })
   }
 
-  if (!isEmpty(user)) {
+  if (isAuthenticated) {
     return <Redirect to="/home" />
   }
 
   return <div>{Loading(LoginForm)({ isLoading, handleLogin })}</div>
-}
+})
 User.propTypes = {
   user: PropTypes.object,
 }

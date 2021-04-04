@@ -50,7 +50,7 @@ function LoginForm({ handleLogin }) {
     resolver: yupResolver(schema),
   })
   const { register, handleSubmit, errors } = methods
-  const onSubmit = async (credentials) => {
+  const onSubmit = (credentials) => {
     handleLogin(credentials)
   }
 

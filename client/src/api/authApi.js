@@ -10,11 +10,13 @@ const authAPI = {
     return { token, refreshToken, user }
   },
   refreshToken: async () => {
-    const { token, user } = await axiosClient.get('/auth/refresh-token')
+    const { token, user, refreshToken } = await axiosClient.get(
+      '/auth/refresh-token'
+    )
     if (!token) {
       history.push('/auth/login')
     }
-    return { user, token }
+    return { user, token, refreshToken }
   },
 }
 
