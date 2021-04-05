@@ -77,9 +77,9 @@ const handleRefreshToken = async (refreshToken) => {
 }
 
 const refreshToken = asyncMiddleware(async (req, res, next) => {
-  const refreshToken = req.headers['refresh-token']
-  const { token, payload, newRefreshToken } = await handleRefreshToken(
-    refreshToken
+  const _refreshToken = req.headers['refresh-token']
+  const { token, payload, refreshToken } = await handleRefreshToken(
+    _refreshToken
   ).catch((err) => {
     return next(err)
   })
@@ -87,7 +87,7 @@ const refreshToken = asyncMiddleware(async (req, res, next) => {
     '-password -salt -refreshToken'
   )
 
-  res.jsonp({ token, user, refreshToken: newRefreshToken })
+  res.jsonp({ token, user, refreshToken })
 })
 
 module.exports = {

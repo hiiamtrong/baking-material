@@ -1,5 +1,11 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Button, Container } from '@material-ui/core'
+import {
+  Button,
+  Checkbox,
+  Container,
+  FormControlLabel,
+  FormLabel,
+} from '@material-ui/core'
 import Avatar from '@material-ui/core/Avatar'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Grid from '@material-ui/core/Grid'
@@ -8,8 +14,9 @@ import Typography from '@material-ui/core/Typography'
 import usersAPI from 'api/usersApi'
 import InputField from 'components/InputField'
 import notify from 'components/Notify'
-import React from 'react'
-import { useForm } from 'react-hook-form'
+import { useRole } from 'hook/useRole'
+import React, { useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
 import { useHistory } from 'react-router'
 import * as Yup from 'yup'
 const schema = Yup.object().shape({
@@ -17,6 +24,7 @@ const schema = Yup.object().shape({
     .max(10, 'Login must be shorter than 10 characters')
     .required('Username is required'),
   email: Yup.string().email('Email invalid').required('Email is required'),
+  roles: Yup.array(),
 })
 
 const useStyles = makeStyles((theme) => ({
@@ -40,14 +48,31 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const CreateUserForm = () => {
+  const [roles] = useRole()
   const classes = useStyles()
   const history = useHistory()
-  const { register, handleSubmit, errors } = useForm({
+  const { register, handleSubmit, errors, control } = useForm({
     mode: 'onSubmit',
     resolver: yupResolver(schema),
+    defaultValues: {
+      roles: [],
+    },
   })
 
+  const [checkedValues, setCheckedValues] = useState([])
+
+  function handleSelect(checkedRole) {
+    const newNames = checkedValues?.includes(checkedRole)
+      ? checkedValues?.filter((role) => role !== checkedRole)
+      : [...(checkedValues ?? []), checkedRole]
+    setCheckedValues(newNames)
+
+    return newNames
+  }
+
   const onSubmit = async (data) => {
+    console.log(data)
+
     await usersAPI
       .create(data)
       .then(() => {
@@ -58,6 +83,7 @@ const CreateUserForm = () => {
         notify.errorFromServer(error)
       })
   }
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -108,7 +134,35 @@ const CreateUserForm = () => {
                 error={errors?.email}
               />
             </Grid>
+
+            <Grid>
+              <FormLabel>Roles </FormLabel>
+
+              {roles.map((role) => (
+                <FormControlLabel
+                  control={
+                    <Controller
+                      name="roles"
+                      render={({ onChange: onCheckChange }) => {
+                        return (
+                          <Checkbox
+                            checked={checkedValues.includes(role._id)}
+                            onChange={() =>
+                              onCheckChange(handleSelect(role._id))
+                            }
+                          />
+                        )
+                      }}
+                      control={control}
+                    />
+                  }
+                  key={role._id}
+                  label={role.label}
+                />
+              ))}
+            </Grid>
           </Grid>
+
           <Button
             type="submit"
             fullWidth

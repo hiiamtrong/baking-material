@@ -35,15 +35,25 @@ export const Header = observer(() => {
         title="Accounts"
       >
         <Menu.ItemGroup title="Users">
-          <Menu.Item key="account:1">
+          <Menu.Item key="users:1">
             <Link to="/users">List Users</Link>
           </Menu.Item>
-          <Menu.Item key="account:2">
+          <Menu.Item key="users:2">
             <Link to="/users/create">Create An User</Link>
           </Menu.Item>
         </Menu.ItemGroup>
+
+        <Menu.ItemGroup title="Roles">
+          <Menu.Item key="roles:1">
+            <Link to="/roles">List Roles</Link>
+          </Menu.Item>
+          <Menu.Item key="roles:2">
+            <Link to="/roles/create">Create A Role</Link>
+          </Menu.Item>
+        </Menu.ItemGroup>
+
         <Menu.ItemGroup title="Customers">
-          <Menu.Item key="account:3">List Customers</Menu.Item>
+          <Menu.Item key="customers:1">List Customers</Menu.Item>
         </Menu.ItemGroup>
       </SubMenu>
       {/* Menu Product */}
@@ -58,8 +68,8 @@ export const Header = observer(() => {
           <Menu.Item key="product:2">Create A Product</Menu.Item>
         </Menu.ItemGroup>
         <Menu.ItemGroup title="Bills">
-          <Menu.Item key="product:3">List Bills</Menu.Item>
-          <Menu.Item key="product:4">Summary Revenue</Menu.Item>
+          <Menu.Item key="bills:1">List Bills</Menu.Item>
+          <Menu.Item key="bills:2">Summary Revenue</Menu.Item>
         </Menu.ItemGroup>
       </SubMenu>
 
