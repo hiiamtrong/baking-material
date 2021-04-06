@@ -1,7 +1,7 @@
 const { CREDENTIALS } = require('../config/constants')
 const jwt = require('jsonwebtoken')
 const generateToken = ({ body, type }) => {
-  return jwt.sign({ user: body }, CREDENTIALS[`${type}_SECRET`], {
+  return jwt.sign(body, CREDENTIALS[`${type}_SECRET`], {
     expiresIn: CREDENTIALS[`${type}_LIFE`],
   })
 }

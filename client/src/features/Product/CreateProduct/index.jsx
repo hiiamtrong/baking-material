@@ -1,30 +1,27 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import {
-  Button,
-  Checkbox,
-  Container,
-  FormControlLabel,
-  FormLabel,
-} from '@material-ui/core'
-import Avatar from '@material-ui/core/Avatar'
+import { Button, Container } from '@material-ui/core'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
-import usersAPI from 'api/usersApi'
+import productAPI from 'api/productApi'
 import InputField from 'components/InputField'
 import notify from 'components/Notify'
-import { useRole } from 'hook/useRole'
+import { UploadImages } from 'components/UploadImages'
 import React, { useState } from 'react'
-import { Controller, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { useHistory } from 'react-router'
 import * as Yup from 'yup'
+
 const schema = Yup.object().shape({
-  username: Yup.string()
-    .max(10, 'Login must be shorter than 10 characters')
-    .required('Username is required'),
-  email: Yup.string().email('Email invalid').required('Email is required'),
-  roles: Yup.array(),
+  sku: Yup.string()
+    .matches(/^P\d{4}/, {
+      message: 'Sku format is first letter is "P" and 4 number ',
+    })
+    .required('Sku is required'),
+  description: Yup.string().required('Description is required'),
+  price: Yup.number().required('Price is required'),
+  tags: Yup.array(),
 })
 
 const useStyles = makeStyles((theme) => ({
@@ -47,11 +44,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const CreateUserForm = () => {
-  const [roles] = useRole()
+const CreateProductForm = () => {
   const classes = useStyles()
   const history = useHistory()
-  const { register, handleSubmit, errors, control } = useForm({
+
+  const [images, setImages] = useState([])
+
+  const handleUploadImages = (image) => {
+    setImages((state) => {
+      return [...state, image]
+    })
+  }
+
+  const { register, handleSubmit, errors } = useForm({
     mode: 'onSubmit',
     resolver: yupResolver(schema),
     defaultValues: {
@@ -59,23 +64,13 @@ const CreateUserForm = () => {
     },
   })
 
-  const [checkedValues, setCheckedValues] = useState([])
-
-  function handleSelect(checkedRole) {
-    const newNames = checkedValues?.includes(checkedRole)
-      ? checkedValues?.filter((role) => role !== checkedRole)
-      : [...(checkedValues ?? []), checkedRole]
-    setCheckedValues(newNames)
-
-    return newNames
-  }
-
   const onSubmit = async (data) => {
-    await usersAPI
+    data.images = images
+    await productAPI
       .create(data)
       .then(() => {
-        notify.success('Tạo người dùng thành công')
-        history.push('/users')
+        notify.success('Tạo sản phẩm thành công')
+        history.push('/products')
       })
       .catch((error) => {
         notify.errorFromServer(error)
@@ -86,37 +81,36 @@ const CreateUserForm = () => {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
-        <Avatar className={classes.avatar}></Avatar>
         <Typography component="h1" variant="h5">
-          Create An User
+          Create A Product
         </Typography>
         <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <InputField
-                autoComplete="username"
-                name="username"
+                autoComplete="sku"
+                name="sku"
                 variant="outlined"
                 required
                 fullWidth
-                id="username"
-                label="Username"
+                id="sku"
+                label="SKU"
                 autoFocus
                 inputRef={register}
-                error={errors?.username}
+                error={errors?.sku}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <InputField
+                type="number"
                 variant="outlined"
                 required
                 fullWidth
-                id="displayName"
-                label="Display Name"
-                name="displayName"
-                autoComplete="name"
+                id="price"
+                label="Price"
+                name="price"
                 inputRef={register}
-                error={errors?.displayName}
+                error={errors?.price}
               />
             </Grid>
             <Grid item xs={12}>
@@ -124,40 +118,15 @@ const CreateUserForm = () => {
                 variant="outlined"
                 required
                 fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
+                id="description"
+                label="Description"
+                name="description"
                 inputRef={register}
-                error={errors?.email}
+                error={errors?.description}
               />
             </Grid>
-
-            <Grid>
-              <FormLabel>Roles </FormLabel>
-
-              {roles.map((role) => (
-                <FormControlLabel
-                  control={
-                    <Controller
-                      name="roles"
-                      render={({ onChange: onCheckChange }) => {
-                        return (
-                          <Checkbox
-                            checked={checkedValues.includes(role._id)}
-                            onChange={() =>
-                              onCheckChange(handleSelect(role._id))
-                            }
-                          />
-                        )
-                      }}
-                      control={control}
-                    />
-                  }
-                  key={role._id}
-                  label={role.label}
-                />
-              ))}
+            <Grid item xs={12}>
+              <UploadImages handleUploadImages={handleUploadImages} />
             </Grid>
           </Grid>
 
@@ -175,4 +144,4 @@ const CreateUserForm = () => {
     </Container>
   )
 }
-export default CreateUserForm
+export default CreateProductForm

@@ -31,7 +31,7 @@ const update = asyncMiddleware(async (req, res) => {
   res.jsonp(role)
 })
 
-const getUserById = function (req, res, next, id) {
+const getRoleById = function (req, res, next, id) {
   Role.findById(id)
     .then((role) => {
       if (!role) {
@@ -50,5 +50,5 @@ module.exports = {
   list,
   read,
   update,
-  getUserById,
+  getRoleById,
 }

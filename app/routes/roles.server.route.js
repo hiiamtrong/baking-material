@@ -4,7 +4,7 @@ module.exports = (app) => {
   app.use('/roles', requireLogin)
   app.route('/roles').get(roles.list).post(roles.create)
 
-  app.route('/roles/:userId').get(roles.read).put(roles.update)
+  app.route('/roles/:roleId').get(roles.read).put(roles.update)
 
-  app.param('userId', roles.getUserById)
+  app.param('roleId', roles.getRoleById)
 }

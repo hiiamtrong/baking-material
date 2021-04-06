@@ -7,6 +7,7 @@ const route = require('../routes/app.server.route')
 const logger = require('../lib/logger')
 const path = require('path')
 const passport = require('passport')
+const fileUpload = require('express-fileupload')
 
 require('../auth/auth')
 const init = (app) => {
@@ -15,6 +16,7 @@ const init = (app) => {
   app.use(errorHandler({ log: true }))
   app.use(helmet())
 
+  app.use(fileUpload())
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
 
