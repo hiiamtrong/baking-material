@@ -45,7 +45,12 @@ const UserSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
-    roles: [String],
+    roles: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Role',
+      },
+    ],
     refreshToken: String,
   },
   { timestamps: true }

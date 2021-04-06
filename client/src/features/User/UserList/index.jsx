@@ -48,14 +48,14 @@ const columns = [
     dataIndex: 'roles',
     render: (roles) => (
       <span>
-        {roles.map((tag) => {
+        {roles.map((role) => {
           let color = 'red'
-          if (tag === 'admin') {
+          if (role.code === 'admin') {
             color = 'blue'
           }
           return (
-            <Tag color={color} key={tag}>
-              {tag.toUpperCase()}
+            <Tag color={color} key={role._id}>
+              {role.label}
             </Tag>
           )
         })}

@@ -46,7 +46,6 @@ export class AuthenticationStore {
   }
 
   setCredentials(credentials) {
-    console.log(credentials)
     const { user, token, refreshToken } = credentials
     this.user = user
     this.token = token

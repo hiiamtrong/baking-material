@@ -1,6 +1,7 @@
 const authRoutes = require('./auth.server.route')
 const userRoutes = require('./users.server.route')
 const productRoutes = require('./products.server.route')
+const roleRoutes = require('./roles.server.route')
 function init(app) {
   app.get('/', (req, res) => {
     res.jsonp({
@@ -10,6 +11,7 @@ function init(app) {
   authRoutes(app)
   userRoutes(app)
   productRoutes(app)
+  roleRoutes(app)
 }
 
 module.exports = {

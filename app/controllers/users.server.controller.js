@@ -14,6 +14,7 @@ const list = asyncMiddleware(async (req, res) => {
     status: 'active',
   })
     .populate('createdBy', 'username email displayName')
+    .populate('roles', 'code label')
     .lean()
   res.jsonp(users)
 })
