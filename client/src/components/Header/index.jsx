@@ -34,12 +34,14 @@ export const Header = observer(() => {
         icon={<UserSwitchOutlined />}
         title="Accounts"
       >
-        <Menu.ItemGroup title="Users">
+        <Menu.ItemGroup title="Users" data-cy="menu-user">
           <Menu.Item key="users:1">
             <Link to="/users">List Users</Link>
           </Menu.Item>
           <Menu.Item key="users:2">
-            <Link to="/users/create">Create An User</Link>
+            <Link data-cy="menu-create-user" to="/users/create">
+              Create An User
+            </Link>
           </Menu.Item>
         </Menu.ItemGroup>
 

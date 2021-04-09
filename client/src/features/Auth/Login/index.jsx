@@ -79,6 +79,7 @@ function LoginForm({ handleLogin }) {
             autoFocus
             inputRef={register}
             error={errors?.username}
+            data-cy="username-input"
           />
           <InputField
             variant="outlined"
@@ -92,6 +93,7 @@ function LoginForm({ handleLogin }) {
             autoComplete="current-password"
             inputRef={register}
             error={errors?.password}
+            data-cy="password-input"
           />
           <Button
             type="submit"
