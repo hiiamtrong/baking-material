@@ -106,6 +106,7 @@ const CreateUserForm = () => {
                 autoFocus
                 inputRef={register}
                 error={errors?.username}
+                data-cy="input-username"
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -119,6 +120,7 @@ const CreateUserForm = () => {
                 autoComplete="name"
                 inputRef={register}
                 error={errors?.displayName}
+                data-cy="input-displayname"
               />
             </Grid>
             <Grid item xs={12}>
@@ -132,6 +134,7 @@ const CreateUserForm = () => {
                 autoComplete="email"
                 inputRef={register}
                 error={errors?.email}
+                data-cy="input-email"
               />
             </Grid>
 
@@ -169,6 +172,7 @@ const CreateUserForm = () => {
             variant="contained"
             color="primary"
             className={classes.submit}
+            data-cy="button-create"
           >
             Create
           </Button>
