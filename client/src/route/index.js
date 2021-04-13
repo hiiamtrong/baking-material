@@ -1,5 +1,6 @@
 import PrivateRoute from 'components/PrivateRoute/index.jsx'
 import AuthFeature from 'features/Auth'
+import ProductFeature from 'features/Product/index.jsx'
 import RoleFeature from 'features/Role/index.jsx'
 import UserFeature from 'features/User'
 import React from 'react'
@@ -15,6 +16,7 @@ function Routes() {
       <Route exact path="/auth/login" component={AuthFeature}></Route>
       <PrivateRoute path="/users" component={UserFeature}></PrivateRoute>
       <PrivateRoute path="/roles" component={RoleFeature}></PrivateRoute>
+      <PrivateRoute path="/products" component={ProductFeature}></PrivateRoute>
       <PrivateRoute
         exact
         path="/home"

@@ -1,10 +1,10 @@
 const products = require('../controllers/products.server.controller')
 
-// const { requireLogin } = require('../middlewares/auth.server.middleware')
+const { requireLogin } = require('../middlewares/auth.server.middleware')
 module.exports = (app) => {
-  //   app.use('/users', requireLogin)
-  //   app.route('/users').get(users.list).post(users.create)
-  //   app.route('/users/:userId').get(users.read).put(users.update)
-  //   app.param('userId', users.getUserById)
-  app.route('/products/upload').post(products.handleUploadImages)
+  app.use('/products', requireLogin)
+  app.route('/products').get(products.list).post(products.create)
+
+  app.route('/products/:roleId').get(products.read).put(products.update)
+  app.param('roleId', products.getProductById)
 }

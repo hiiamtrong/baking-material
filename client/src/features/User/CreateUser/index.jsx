@@ -71,8 +71,6 @@ const CreateUserForm = () => {
   }
 
   const onSubmit = async (data) => {
-    console.log(data)
-
     await usersAPI
       .create(data)
       .then(() => {

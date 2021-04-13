@@ -20,7 +20,7 @@ const login = asyncMiddleware(async (req, res, next) => {
       if (error) {
         return next(error)
       }
-      const body = { _id: user._id }
+      const body = { user: { _id: user._id } }
       const token = generateToken({ body, type: 'TOKEN' })
       const refreshToken = generateToken({ body, type: 'REFRESH_TOKEN' })
       await User.updateOne({ _id: user._id }, { refreshToken })
@@ -44,7 +44,6 @@ const requireLogin = asyncMiddleware(async (req, res, next) => {
   }).catch((err) => {
     return res.status(401).jsonp(err.message)
   })
-
   if (helper.isFalsy(payload, true)) {
     return res.status(401).jsonp('Invalid token')
   }
@@ -68,9 +67,9 @@ const handleRefreshToken = async (refreshToken) => {
   if (helper.isFalsy(payload, true)) {
     throw new Error('Unauthorized')
   }
-  const token = generateToken({ body: payload, type: 'TOKEN' })
+  const token = generateToken({ body: { user: payload.user }, type: 'TOKEN' })
   const newRefreshToken = generateToken({
-    body: payload,
+    body: { user: payload.user },
     type: 'REFRESH_TOKEN',
   })
   return { token, payload, refreshToken: newRefreshToken }
@@ -78,6 +77,7 @@ const handleRefreshToken = async (refreshToken) => {
 
 const refreshToken = asyncMiddleware(async (req, res, next) => {
   const _refreshToken = req.headers['refresh-token']
+
   const { token, payload, refreshToken } = await handleRefreshToken(
     _refreshToken
   ).catch((err) => {
@@ -86,7 +86,9 @@ const refreshToken = asyncMiddleware(async (req, res, next) => {
   const user = await User.findById(payload.user._id).select(
     '-password -salt -refreshToken'
   )
-
+  if (!user) {
+    throw new Error('Unauthorized')
+  }
   res.jsonp({ token, user, refreshToken })
 })
 
