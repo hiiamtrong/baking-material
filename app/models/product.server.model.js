@@ -35,10 +35,15 @@ const ProductSchema = new mongoose.Schema(
     updated: {
       type: Date,
     },
-    tags: [String],
+    categories: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category',
+      },
+    ],
     images: [
       {
-        url: String,
+        src: String,
         name: String,
       },
     ],
