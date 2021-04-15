@@ -8,18 +8,13 @@ import { Menu } from 'antd'
 import RootContext from 'context'
 import { observer } from 'mobx-react-lite'
 import React, { useContext } from 'react'
-import { Link, useHistory } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 const { SubMenu } = Menu
 
 export const Header = observer(() => {
-  const history = useHistory()
   const { authenticationStore } = useContext(RootContext)
-  const { logout, isAuthenticated, user } = authenticationStore
-  const handleLogout = () => {
-    logout()
-    history.push('/auth/login')
-  }
+  const { isAuthenticated, user } = authenticationStore
 
   return (
     <Menu mode="horizontal">
@@ -97,12 +92,8 @@ export const Header = observer(() => {
         <Menu.Item key="setting:1" hidden={isAuthenticated}>
           <Link to="/auth/login">Login</Link>
         </Menu.Item>
-        <Menu.Item
-          key="setting:2"
-          onClick={() => handleLogout()}
-          hidden={!isAuthenticated}
-        >
-          Logout
+        <Menu.Item key="setting:2" hidden={!isAuthenticated}>
+          <Link to="/auth/logout">Logout</Link>
         </Menu.Item>
       </Menu.SubMenu>
     </Menu>
