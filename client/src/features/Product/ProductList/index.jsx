@@ -46,19 +46,16 @@ const columns = [
     key: 'price',
   },
   {
-    title: 'Tags',
-    key: 'tags',
-    dataIndex: 'tags',
-    render: (tags) => (
+    title: 'Categories',
+    key: 'categories',
+    dataIndex: 'categories',
+    render: (categories) => (
       <span>
-        {map(tags, (tag) => {
+        {map(categories, (category) => {
           let color = 'red'
-          if (tag.code === 'admin') {
-            color = 'blue'
-          }
           return (
-            <Tag color={color} key={tag._id}>
-              {tag.label}
+            <Tag color={color} key={category._id}>
+              {category.label}
             </Tag>
           )
         })}
@@ -73,7 +70,9 @@ const columns = [
       return (
         <span>
           {map(images, (image) => {
-            return <img style={{ width: '80px' }} src={image.url} />
+            return (
+              <img key={image._id} style={{ width: '80px' }} src={image.src} />
+            )
           })}
         </span>
       )

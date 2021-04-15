@@ -136,13 +136,13 @@ export function UploadImages({ handleUploadImages }) {
           imageInfos.map((image, index) => (
             <ListItem divider key={index}>
               <img
-                src={image.url}
+                src={image.src}
                 alt={image.name}
                 height="80px"
                 width="80px"
                 className="mr20"
               />
-              <a href={image.url}>{image.name}</a>
+              <a href={image.src}>{image.name}</a>
             </ListItem>
           ))}
       </ul>

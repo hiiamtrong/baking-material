@@ -65,9 +65,9 @@ const handleUploadImages = asyncMiddleware(async (req, res) => {
     name,
     time,
   })
-  const url = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${auth.username}/${time}_${name}`
+  const src = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${auth.username}/${time}_${name}`
   const _file = {
-    url,
+    src,
     name,
   }
   res.jsonp({ file: _file, message: 'Upload thành công' })

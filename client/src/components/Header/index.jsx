@@ -73,6 +73,16 @@ export const Header = observer(() => {
             <Link to="/products/create">Create A Product</Link>
           </Menu.Item>
         </Menu.ItemGroup>
+
+        <Menu.ItemGroup title="Categories">
+          <Menu.Item key="category:1">
+            <Link to="/categories">List Categories</Link>
+          </Menu.Item>
+          <Menu.Item key="category:2">
+            <Link to="/categories/create">Create A Category</Link>
+          </Menu.Item>
+        </Menu.ItemGroup>
+
         <Menu.ItemGroup title="Bills">
           <Menu.Item key="bills:1">List Bills</Menu.Item>
           <Menu.Item key="bills:2">Summary Revenue</Menu.Item>

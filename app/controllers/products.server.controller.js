@@ -14,7 +14,9 @@ const create = asyncMiddleware(async (req, res) => {
 const list = asyncMiddleware(async (req, res) => {
   const products = await Product.find({
     status: 'active',
-  }).lean()
+  })
+    .populate('categories', 'code label')
+    .lean()
   res.jsonp(products)
 })
 
