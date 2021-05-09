@@ -6,5 +6,5 @@ module.exports = (app) => {
 
   app.route('/vouchers/:voucherId').get(vouchers.read).put(vouchers.update)
 
-  app.param('voucherId', vouchers.getRoleById)
+  app.param('voucherId', vouchers.getVoucherById)
 }

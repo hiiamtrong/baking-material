@@ -31,7 +31,7 @@ const update = asyncMiddleware(async (req, res) => {
   res.jsonp(voucher)
 })
 
-const getRoleById = function (req, res, next, id) {
+const getVoucherById = function (req, res, next, id) {
   Voucher.findById(id)
     .then((voucher) => {
       if (!voucher) {
@@ -50,5 +50,5 @@ module.exports = {
   list,
   read,
   update,
-  getRoleById,
+  getVoucherById,
 }

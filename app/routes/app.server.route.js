@@ -6,6 +6,7 @@ const categoriesRoutes = require('./categories.server.route')
 const vouchersRoutes = require('./vouchers.server.route')
 const { handleUploadImages } = require('../services/S3-aws')
 const { requireLogin } = require('../middlewares/auth.server.middleware')
+const customersRoutes = require('./customers.server.route')
 function init(app) {
   app.get('/', (req, res) => {
     res.jsonp({
@@ -20,6 +21,7 @@ function init(app) {
   roleRoutes(app)
   categoriesRoutes(app)
   vouchersRoutes(app)
+  customersRoutes(app)
 }
 
 module.exports = {
