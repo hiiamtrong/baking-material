@@ -3,6 +3,7 @@ const userRoutes = require('./users.server.route')
 const productRoutes = require('./products.server.route')
 const roleRoutes = require('./roles.server.route')
 const categoriesRoutes = require('./categories.server.route')
+const vouchersRoutes = require('./vouchers.server.route')
 const { handleUploadImages } = require('../services/S3-aws')
 const { requireLogin } = require('../middlewares/auth.server.middleware')
 function init(app) {
@@ -18,6 +19,7 @@ function init(app) {
   productRoutes(app)
   roleRoutes(app)
   categoriesRoutes(app)
+  vouchersRoutes(app)
 }
 
 module.exports = {
