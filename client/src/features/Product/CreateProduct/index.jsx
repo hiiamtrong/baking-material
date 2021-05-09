@@ -144,7 +144,7 @@ const CreateProductForm = () => {
               />
             </Grid>
 
-            <Grid>
+            <Grid style={{ overflow: 'auto', height: '200px ' }}>
               <FormLabel>Categories </FormLabel>
 
               {categories.map((role) => (

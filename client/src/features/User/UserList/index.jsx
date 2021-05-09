@@ -77,6 +77,8 @@ const columns = [
 export const UserListView = ({ users = [], waiting }) => {
   return (
     <div>
+      <br />
+      <h2>Danh sách người dùng</h2>
       <Table
         columns={columns}
         pagination={{ position: ['topRight'] }}

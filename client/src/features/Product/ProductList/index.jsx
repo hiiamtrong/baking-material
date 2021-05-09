@@ -93,6 +93,8 @@ const columns = [
 export const ProductListView = ({ products = [], waiting }) => {
   return (
     <div>
+      <br />
+      <h2>Danh sách sản phẩm</h2>
       <Table
         columns={columns}
         pagination={{ position: ['topRight'] }}

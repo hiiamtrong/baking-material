@@ -46,6 +46,8 @@ const columns = [
 export const CategoryListView = ({ categories = [], waiting }) => {
   return (
     <div>
+      <br />
+      <h2>Danh sách phân loại sản phẩm  </h2>
       <Table
         columns={columns}
         pagination={{ position: ['topRight'] }}

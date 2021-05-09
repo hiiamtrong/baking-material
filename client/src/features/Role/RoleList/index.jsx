@@ -1,6 +1,6 @@
 import { Space, Table, Tag } from 'antd'
 import Loading from 'components/Loading'
-import { useRole  } from 'hook/useRole'
+import { useRole } from 'hook/useRole'
 import PropTypes from 'prop-types'
 import React from 'react'
 
@@ -44,6 +44,8 @@ const columns = [
 export const UserListView = ({ roles = [], waiting }) => {
   return (
     <div>
+      <br />
+      <h2>Danh sách phân quyền người dùng</h2>
       <Table
         columns={columns}
         pagination={{ position: ['topRight'] }}
