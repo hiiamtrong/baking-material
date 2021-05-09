@@ -34,6 +34,6 @@ const CustomerSchema = new mongoose.Schema(
 CustomerSchema.plugin(uniqueValidator, {
   message: '{PATH} already exists ',
 })
-CustomerSchema.index({ code: 1 }, { sparse: true, unique: true })
+CustomerSchema.index({ phoneNumber: 1 }, { sparse: true, unique: true })
 
 module.exports = mongoose.model('Customer', CustomerSchema)

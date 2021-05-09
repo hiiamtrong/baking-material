@@ -3,9 +3,7 @@ const asyncMiddleware = require('../middlewares/async-middleware')
 const _ = require('lodash')
 
 const create = asyncMiddleware(async (req, res) => {
-  const { auth } = req
   const customer = new Customer(req.body)
-  customer.createdBy = auth
   await customer.save()
   res.jsonp(customer)
 })
